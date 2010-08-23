@@ -26,8 +26,6 @@
 #include "vtkRenderer.h"
 #include "vtkRendererCollection.h"
 
-
-vtkCxxRevisionMacro(vtkFrameRateWidget, "$Revision: 1.3 $");
 vtkStandardNewMacro(vtkFrameRateWidget);
 
 //----------------------------------------------------------------------------
@@ -49,27 +47,6 @@ vtkFrameRateWidget::vtkFrameRateWidget()
 //----------------------------------------------------------------------------
 vtkFrameRateWidget::~vtkFrameRateWidget()
 {  
-}
-
-//----------------------------------------------------------------------
-void vtkFrameRateWidget::UpdateAction(vtkAbstractWidget *w)
-{
-  // We are in a static method, cast to ourself
-  vtkFrameRateWidget *self = reinterpret_cast<vtkFrameRateWidget*>(w);
-
-  self->Render();
-}
-
-//----------------------------------------------------------------------
-void vtkFrameRateWidget::CreateDefaultRepresentation()
-{
-  if ( ! this->WidgetRep )
-    {
-    this->WidgetRep = vtkFrameRateRepresentation::New();
-    this->WidgetRep->SetRenderer(this->Interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer());
-    //this->Renderer->AddActor2D ( this->TextActor );
-  
-    }
 }
 
 //----------------------------------------------------------------------------

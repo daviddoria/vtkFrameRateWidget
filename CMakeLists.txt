@@ -5,5 +5,5 @@ PROJECT(FrameRateWidget)
 FIND_PACKAGE(VTK REQUIRED)
 INCLUDE(${VTK_USE_FILE})
 
-ADD_EXECUTABLE(FrameRateWidget Test.cpp vtkFrameRateWidget.cxx vtkFrameRateRepresentation.cxx)
+ADD_EXECUTABLE(FrameRateWidget Test.cpp vtkFrameRateWidget.cxx)
 TARGET_LINK_LIBRARIES(FrameRateWidget vtkHybrid vtkWidgets)

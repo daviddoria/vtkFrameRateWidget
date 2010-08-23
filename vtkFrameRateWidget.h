@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkBoxWidget2.h,v $
+  Module:    vtkFrameRateWidget.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,55 +12,47 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkFrameRateWidget - A widget for displaying the frame rate of
-//  the render window
+// .NAME vtkTextWidget - widget for placing text on overlay plane
 // .SECTION Description
-// 
+// This class provides support for interactively placing text on the 2D
+// overlay plane. The text is defined by an instance of vtkTextActor. It uses
+// the event bindings of its superclass (vtkBorderWidget). In addition, when
+// the text is selected, the widget emits a WidgetActivateEvent that
+// observers can watch for. This is useful for opening GUI dialogues to
+// adjust font characteristics, etc. (Please see the superclass for a
+// description of event bindings.)
+
+// .SECTION See Also
+// vtkBorderWidget vtkCaptionWidget
+
+
 #ifndef __vtkFrameRateWidget_h
 #define __vtkFrameRateWidget_h
 
-#include "vtkAbstractWidget.h"
+class vtkTextRepresentation;
+class vtkTextActor;
 
-class vtkFrameRateRepresentation;
+#include "vtkBorderWidget.h"
 
-class VTK_WIDGETS_EXPORT vtkFrameRateWidget : public vtkAbstractWidget
+class VTK_WIDGETS_EXPORT vtkFrameRateWidget : public vtkBorderWidget
 {
 public:
   // Description:
-  // Instantiate the object.
+  // Instantiate class.
   static vtkFrameRateWidget *New();
 
   // Description:
-  // Standard class methods for type information and printing.
-  vtkTypeRevisionMacro(vtkFrameRateWidget,vtkAbstractWidget);
+  // Standard VTK methods.
+  vtkTypeMacro(vtkFrameRateWidget,vtkBorderWidget);
   void PrintSelf(ostream& os, vtkIndent indent);
-
-  // Description:
-  // Specify an instance of vtkWidgetRepresentation used to represent this
-  // widget in the scene. Note that the representation is a subclass of vtkProp
-  // so it can be added to the renderer independent of the widget.
-  void SetRepresentation(vtkFrameRateRepresentation *r)
-    {this->Superclass::SetWidgetRepresentation(reinterpret_cast<vtkWidgetRepresentation*>(r));}
-  
-  // Description:
-  // Create the default widget representation if one is not set. By default,
-  // this is an instance of the vtkFrameRateRepresentation class.
-  void CreateDefaultRepresentation();
 
 protected:
   vtkFrameRateWidget();
   ~vtkFrameRateWidget();
 
-  static void UpdateAction(vtkAbstractWidget*);
-    
-//BTX - manage the state of the widget
-  int WidgetState;
-  enum _WidgetState {Start=0,Active};
-//ETX
-  
 private:
   vtkFrameRateWidget(const vtkFrameRateWidget&);  //Not implemented
   void operator=(const vtkFrameRateWidget&);  //Not implemented
 };
- 
+
 #endif
