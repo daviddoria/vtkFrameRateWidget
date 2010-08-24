@@ -14,6 +14,8 @@
 #include "vtkTimerLog.h"
 #include "vtkSmartPointer.h"
 
+#include <sstream>
+
 void vtkFrameRateWidget::Init()
 {
   vtkSmartPointer<vtkCallbackCommand> callbackCommand =
@@ -40,6 +42,9 @@ void vtkFrameRateWidget::RenderCallback(vtkObject* caller, long unsigned int vtk
   double timeInSeconds=timer->GetElapsedTime();
   double fps=1.0/timeInSeconds;
   std::cout << "FPS: " << fps << std::endl;
+  std::stringstream ss;
+  ss << fps;
+//  this->GetTextActor()->SetInput(ss.str().c_str()); //the callback function has to be static, but we need to be in an instance in order to do this!
 
 }
 
