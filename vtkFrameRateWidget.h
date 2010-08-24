@@ -32,9 +32,9 @@
 class vtkTextRepresentation;
 class vtkTextActor;
 
-#include "vtkBorderWidget.h"
+#include "vtkTextWidget.h"
 
-class VTK_WIDGETS_EXPORT vtkFrameRateWidget : public vtkBorderWidget
+class VTK_WIDGETS_EXPORT vtkFrameRateWidget : public vtkTextWidget
 {
 public:
   // Description:
@@ -46,7 +46,12 @@ public:
   vtkTypeMacro(vtkFrameRateWidget,vtkBorderWidget);
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  void Init();
+  
 protected:
+  static void RenderCallback(vtkObject* caller, long unsigned int vtkNotUsed(eventId),
+			    void* vtkNotUsed(clientData), void* vtkNotUsed(callData) );
+			    
   vtkFrameRateWidget();
   ~vtkFrameRateWidget();
 

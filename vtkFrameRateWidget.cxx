@@ -1,19 +1,4 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkBoxWidget2.cxx,v $
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
 #include "vtkFrameRateWidget.h"
-#include "vtkFrameRateRepresentation.h"
 #include "vtkCommand.h"
 #include "vtkCallbackCommand.h"
 #include "vtkRenderWindowInteractor.h"
@@ -25,23 +10,44 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
 #include "vtkRendererCollection.h"
+#include "vtkCallbackCommand.h"
+#include "vtkTimerLog.h"
+#include "vtkSmartPointer.h"
+
+void vtkFrameRateWidget::Init()
+{
+  vtkSmartPointer<vtkCallbackCommand> callbackCommand =
+    vtkSmartPointer<vtkCallbackCommand>::New();
+  callbackCommand->SetCallback(this->RenderCallback);
+  this->Interactor->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, callbackCommand);
+  
+}
+
+void vtkFrameRateWidget::RenderCallback(vtkObject* caller, long unsigned int vtkNotUsed(eventId),
+			    void* vtkNotUsed(clientData), void* vtkNotUsed(callData) )
+{
+  std::cout << "RenderCallback!" << std::endl;
+  
+  vtkRenderWindow* window = static_cast<vtkRenderWindow*>(caller);
+  vtkSmartPointer<vtkTimerLog> timer = 
+    vtkSmartPointer<vtkTimerLog>::New();
+  timer->StartTimer();
+  vtkRenderer* renderer = window->GetRenderers()->GetFirstRenderer();
+  renderer->Render();
+//  renderer->WaitForCompletion();
+  timer->StopTimer();
+
+  double timeInSeconds=timer->GetElapsedTime();
+  double fps=1.0/timeInSeconds;
+  std::cout << "FPS: " << fps << std::endl;
+
+}
 
 vtkStandardNewMacro(vtkFrameRateWidget);
 
 //----------------------------------------------------------------------------
 vtkFrameRateWidget::vtkFrameRateWidget()
 {
-  this->WidgetState = vtkFrameRateWidget::Start;
-  
-  // Define widget events
-  /*
-  this->CallbackMapper->SetCallbackMethod(vtkCommand::UpdateEvent,
-                                          vtkEvent::NoModifier,
-                                          0, 0, NULL,
-                                          vtkWidgetEvent::Update,
-                                          this, vtkFrameRateWidget::UpdateAction);
-  */
-  
 }
 
 //----------------------------------------------------------------------------
@@ -53,7 +59,4 @@ vtkFrameRateWidget::~vtkFrameRateWidget()
 void vtkFrameRateWidget::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
-
 }
-
-
