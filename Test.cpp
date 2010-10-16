@@ -30,7 +30,6 @@ int main(int, char *[])
     vtkSmartPointer<vtkActor> actor =
       vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    //actors.push_back(actor);
     renderer->AddActor(actor);
     }
 
@@ -42,29 +41,15 @@ int main(int, char *[])
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
   interactor->SetRenderWindow(renderWindow);
 
-  /*
-  vtkSmartPointer<vtkTextActor> textActor =
-    vtkSmartPointer<vtkTextActor>::New();
-  textActor->SetInput("This is a test");
-  textActor->GetTextProperty()->SetColor( 0.0, 1.0, 0.0 );
-  */
   vtkSmartPointer<vtkFrameRateWidget> frameRateWidget =
     vtkSmartPointer<vtkFrameRateWidget>::New();
-
-  /*
-  vtkSmartPointer<vtkTextRepresentation> textRepresentation =
-    vtkSmartPointer<vtkTextRepresentation>::New();
-
-  */
-//  frameRateWidget->SetRepresentation(textRepresentation);
   frameRateWidget->SetInteractor(interactor);
-  //frameRateWidget->SetTextActor(textActor);
   frameRateWidget->SetRenderer(renderer);
   frameRateWidget->SelectableOff();
   frameRateWidget->Init();
 
   renderer->SetBackground(1,1,1); // Background color white
-
+  renderer->Render();
   renderWindow->Render();
   frameRateWidget->On();
   interactor->Start();
