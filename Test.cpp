@@ -1,7 +1,5 @@
 #include <vtkSmartPointer.h>
-#include <vtkTextRepresentation.h>
-#include <vtkTextActor.h>
-#include <vtkTextProperty.h>
+#include <vtkMath.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkRenderWindow.h>
@@ -9,49 +7,67 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
-#include <vtkTextWidget.h>
 
 #include "vtkFrameRateWidget.h"
 
-int main (int argc, char *argv[])
+int main(int, char *[])
 {
- 
-  // a renderer and render window
-  vtkSmartPointer<vtkRenderer> renderer = 
-      vtkSmartPointer<vtkRenderer>::New();
-  vtkSmartPointer<vtkRenderWindow> renderWindow = 
-      vtkSmartPointer<vtkRenderWindow>::New();
+  vtkSmartPointer<vtkRenderer> renderer =
+    vtkSmartPointer<vtkRenderer>::New();
+
+  for(unsigned int i = 0; i < 10; i++)
+    {
+    // Create a sphere
+    vtkSmartPointer<vtkSphereSource> sphereSource =
+      vtkSmartPointer<vtkSphereSource>::New();
+    sphereSource->SetCenter(vtkMath::Random(0,5), vtkMath::Random(0,5), vtkMath::Random(0,5));
+
+    // Create a mapper and actor
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(sphereSource->GetOutputPort());
+
+    vtkSmartPointer<vtkActor> actor =
+      vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
+    //actors.push_back(actor);
+    renderer->AddActor(actor);
+    }
+
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+    vtkSmartPointer<vtkRenderWindow>::New();
   renderWindow->AddRenderer(renderer);
-  
-  // an interactor
-  vtkSmartPointer<vtkRenderWindowInteractor> interactor = 
-      vtkSmartPointer<vtkRenderWindowInteractor>::New();
+
+  vtkSmartPointer<vtkRenderWindowInteractor> interactor =
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
   interactor->SetRenderWindow(renderWindow);
-  
+
+  /*
   vtkSmartPointer<vtkTextActor> textActor =
     vtkSmartPointer<vtkTextActor>::New();
   textActor->SetInput("This is a test");
   textActor->GetTextProperty()->SetColor( 0.0, 1.0, 0.0 );
-  
-  //the widget
-  vtkSmartPointer<vtkFrameRateWidget> frameRateWidget = 
+  */
+  vtkSmartPointer<vtkFrameRateWidget> frameRateWidget =
     vtkSmartPointer<vtkFrameRateWidget>::New();
-      
+
+  /*
   vtkSmartPointer<vtkTextRepresentation> textRepresentation =
     vtkSmartPointer<vtkTextRepresentation>::New();
-  textRepresentation->GetPositionCoordinate()->SetValue(.15, .15);
-  textRepresentation->GetPosition2Coordinate()->SetValue(.7, .2);
-  frameRateWidget->SetRepresentation(textRepresentation);
+
+  */
+//  frameRateWidget->SetRepresentation(textRepresentation);
   frameRateWidget->SetInteractor(interactor);
-  frameRateWidget->SetTextActor(textActor);
+  //frameRateWidget->SetTextActor(textActor);
+  frameRateWidget->SetRenderer(renderer);
   frameRateWidget->SelectableOff();
   frameRateWidget->Init();
-  
+
   renderer->SetBackground(1,1,1); // Background color white
-  
+
   renderWindow->Render();
   frameRateWidget->On();
   interactor->Start();
-  
+
   return EXIT_SUCCESS;
 }

@@ -1,67 +1,39 @@
 #include "vtkFrameRateWidget.h"
 #include "vtkCommand.h"
-#include "vtkCallbackCommand.h"
-#include "vtkRenderWindowInteractor.h"
 #include "vtkObjectFactory.h"
-#include "vtkWidgetEventTranslator.h"
-#include "vtkWidgetCallbackMapper.h" 
-#include "vtkEvent.h"
-#include "vtkWidgetEvent.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
-#include "vtkRendererCollection.h"
-#include "vtkCallbackCommand.h"
-#include "vtkTimerLog.h"
 #include "vtkSmartPointer.h"
+#include "vtkTextActor.h"
+#include "vtkTextRepresentation.h"
+#include "vtkTextProperty.h"
 
 #include <sstream>
 
+vtkStandardNewMacro(vtkFrameRateWidget);
+
 void vtkFrameRateWidget::Init()
 {
-  vtkSmartPointer<vtkCallbackCommand> callbackCommand =
-    vtkSmartPointer<vtkCallbackCommand>::New();
-  callbackCommand->SetCallback(this->RenderCallback);
-  this->Interactor->GetRenderWindow()->AddObserver(vtkCommand::RenderEvent, callbackCommand);
-  
+  this->Renderer->AddObserver(vtkCommand::EndEvent, this, &vtkFrameRateWidget::RenderCallback);
+
+  this->CreateDefaultRepresentation();
+  static_cast<vtkTextRepresentation*>(this->WidgetRep)->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
+  static_cast<vtkTextRepresentation*>(this->WidgetRep)->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
+  static_cast<vtkTextRepresentation*>(this->WidgetRep)->GetPositionCoordinate()->SetValue(.05, .05);
+  static_cast<vtkTextRepresentation*>(this->WidgetRep)->GetPosition2Coordinate()->SetValue(.3, .2);
+  static_cast<vtkTextRepresentation*>(this->WidgetRep)->GetTextActor()->GetTextProperty()->SetColor( 0.0, 1.0, 0.0 );
 }
 
 void vtkFrameRateWidget::RenderCallback(vtkObject* caller, long unsigned int vtkNotUsed(eventId),
-			    void* vtkNotUsed(clientData), void* vtkNotUsed(callData) )
+                                        void* vtkNotUsed(callData) )
 {
   std::cout << "RenderCallback!" << std::endl;
-  
-  vtkRenderWindow* window = static_cast<vtkRenderWindow*>(caller);
-  vtkSmartPointer<vtkTimerLog> timer = 
-    vtkSmartPointer<vtkTimerLog>::New();
-  timer->StartTimer();
-  vtkRenderer* renderer = window->GetRenderers()->GetFirstRenderer();
-  renderer->Render();
-//  renderer->WaitForCompletion();
-  timer->StopTimer();
 
-  double timeInSeconds=timer->GetElapsedTime();
-  double fps=1.0/timeInSeconds;
-  std::cout << "FPS: " << fps << std::endl;
+  double timeInSeconds = this->Renderer->GetLastRenderTimeInSeconds();
+  double fps = 1.0/timeInSeconds;
+
   std::stringstream ss;
-  ss << fps;
-//  this->GetTextActor()->SetInput(ss.str().c_str()); //the callback function has to be static, but we need to be in an instance in order to do this!
+  ss << "Frame rate: " << fps << " (fps)";
+  this->GetTextActor()->SetInput(ss.str().c_str());
 
-}
-
-vtkStandardNewMacro(vtkFrameRateWidget);
-
-//----------------------------------------------------------------------------
-vtkFrameRateWidget::vtkFrameRateWidget()
-{
-}
-
-//----------------------------------------------------------------------------
-vtkFrameRateWidget::~vtkFrameRateWidget()
-{  
-}
-
-//----------------------------------------------------------------------------
-void vtkFrameRateWidget::PrintSelf(ostream& os, vtkIndent indent)
-{
-  this->Superclass::PrintSelf(os,indent);
 }

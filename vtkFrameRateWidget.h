@@ -12,48 +12,34 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkTextWidget - widget for placing text on overlay plane
+// .NAME vtkFrameRateWidget - widget for displaying the framerate
 // .SECTION Description
-// This class provides support for interactively placing text on the 2D
-// overlay plane. The text is defined by an instance of vtkTextActor. It uses
-// the event bindings of its superclass (vtkBorderWidget). In addition, when
-// the text is selected, the widget emits a WidgetActivateEvent that
-// observers can watch for. This is useful for opening GUI dialogues to
-// adjust font characteristics, etc. (Please see the superclass for a
-// description of event bindings.)
-
-// .SECTION See Also
-// vtkBorderWidget vtkCaptionWidget
+// This class displays text of the framerate in the corner of a render window.
 
 
 #ifndef __vtkFrameRateWidget_h
 #define __vtkFrameRateWidget_h
 
-class vtkTextRepresentation;
-class vtkTextActor;
+class vtkRenderer;
 
 #include "vtkTextWidget.h"
 
 class VTK_WIDGETS_EXPORT vtkFrameRateWidget : public vtkTextWidget
 {
 public:
-  // Description:
-  // Instantiate class.
   static vtkFrameRateWidget *New();
-
-  // Description:
-  // Standard VTK methods.
   vtkTypeMacro(vtkFrameRateWidget,vtkBorderWidget);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkFrameRateWidget(){}
+
+  void SetRenderer(vtkRenderer* renderer){this->Renderer = renderer;}
 
   void Init();
-  
+
 protected:
-  static void RenderCallback(vtkObject* caller, long unsigned int vtkNotUsed(eventId),
-			    void* vtkNotUsed(clientData), void* vtkNotUsed(callData) );
-			    
-  vtkFrameRateWidget();
-  ~vtkFrameRateWidget();
+  void RenderCallback(vtkObject* caller, long unsigned int vtkNotUsed(eventId),
+                      void* vtkNotUsed(callData) );
+
+  vtkRenderer* Renderer;
 
 private:
   vtkFrameRateWidget(const vtkFrameRateWidget&);  //Not implemented
