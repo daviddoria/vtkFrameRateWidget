@@ -49,7 +49,6 @@ int main(int, char *[])
   frameRateWidget->Init();
 
   renderer->SetBackground(1,1,1); // Background color white
-  renderer->Render();
   renderWindow->Render();
   frameRateWidget->On();
   interactor->Start();

@@ -46,9 +46,6 @@ void vtkFrameRateWidget::Init()
 #else
 	this->Renderer->AddObserver(vtkCommand::EndEvent, this, &vtkFrameRateWidget::RenderCallback);
 #endif
-
-	
-	cout << OLD_VTK_VERSION << endl;
 	
 	this->CreateDefaultRepresentation();
 	static_cast<vtkTextRepresentation*>(this->WidgetRep)->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
