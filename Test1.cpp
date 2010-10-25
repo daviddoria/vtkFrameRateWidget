@@ -19,62 +19,60 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    vtkSmartPointer<vtkRenderer> renderer =
-        vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer<vtkRenderer> renderer =
+      vtkSmartPointer<vtkRenderer>::New();
 
-    // Check command line arguments
-    if (argc !=2)
+  unsigned nPoints = 0;
+  // Check command line arguments
+  if (argc < 2)
     {
-        cerr << "ERROR: Number of arguments should be 1" << endl << endl;
-        cerr << "Usage: " << argv[0] << " <number_of_points>" << endl;
-        return EXIT_FAILURE;
+    nPoints = 100;
     }
-
-    unsigned nPoints = 0;
+  else
+    {
     istringstream(argv[1]) >> nPoints;
-
-
-
-    for(unsigned int i = 0; i < nPoints; i++)
-    {
-        // Create a sphere
-        vtkSmartPointer<vtkSphereSource> sphereSource =
-            vtkSmartPointer<vtkSphereSource>::New();
-        sphereSource->SetRadius(nPoints*0.01);
-        sphereSource->SetCenter(vtkMath::Random(0,nPoints), 
-                                vtkMath::Random(0,nPoints), 
-                                vtkMath::Random(0,nPoints));
-
-        // Create a mapper and actor
-        vtkSmartPointer<vtkPolyDataMapper> mapper =
-            vtkSmartPointer<vtkPolyDataMapper>::New();
-        mapper->SetInputConnection(sphereSource->GetOutputPort());
-
-        vtkSmartPointer<vtkActor> actor =
-            vtkSmartPointer<vtkActor>::New();
-        actor->SetMapper(mapper);
-        renderer->AddActor(actor);
     }
 
-    vtkSmartPointer<vtkRenderWindow> renderWindow =
-        vtkSmartPointer<vtkRenderWindow>::New();
-    renderWindow->AddRenderer(renderer);
+  for(unsigned int i = 0; i < nPoints; i++)
+    {
+    // Create a sphere
+    vtkSmartPointer<vtkSphereSource> sphereSource =
+      vtkSmartPointer<vtkSphereSource>::New();
+    sphereSource->SetRadius(nPoints*0.01);
+    sphereSource->SetCenter(vtkMath::Random(0,nPoints),
+                            vtkMath::Random(0,nPoints),
+                            vtkMath::Random(0,nPoints));
 
-    vtkSmartPointer<vtkRenderWindowInteractor> interactor =
-        vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    interactor->SetRenderWindow(renderWindow);
+    // Create a mapper and actor
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(sphereSource->GetOutputPort());
 
-    vtkSmartPointer<vtkFrameRateWidget> frameRateWidget =
-        vtkSmartPointer<vtkFrameRateWidget>::New();
-    frameRateWidget->SetInteractor(interactor);
-    frameRateWidget->SetRenderer(renderer);
-    frameRateWidget->SelectableOff();
-    frameRateWidget->Init();
+    vtkSmartPointer<vtkActor> actor =
+      vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
+    renderer->AddActor(actor);
+    }
 
-    renderer->SetBackground(1,1,1); // Background color white
-    renderWindow->Render();
-    frameRateWidget->On();
-    interactor->Start();
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+    vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->AddRenderer(renderer);
 
-    return EXIT_SUCCESS;
+  vtkSmartPointer<vtkRenderWindowInteractor> interactor =
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  interactor->SetRenderWindow(renderWindow);
+
+  vtkSmartPointer<vtkFrameRateWidget> frameRateWidget =
+    vtkSmartPointer<vtkFrameRateWidget>::New();
+  frameRateWidget->SetInteractor(interactor);
+  frameRateWidget->SetRenderer(renderer);
+  frameRateWidget->SelectableOff();
+  frameRateWidget->Init();
+
+  renderer->SetBackground(1,1,1); // Background color white
+  renderWindow->Render();
+  frameRateWidget->On();
+  interactor->Start();
+
+  return EXIT_SUCCESS;
 }
