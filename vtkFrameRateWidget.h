@@ -40,6 +40,7 @@ protected:
                       void* vtkNotUsed(callData) );
 
   vtkRenderer* Renderer;
+  vtkTimerLog *tlog;
 
 private:
   vtkFrameRateWidget(const vtkFrameRateWidget&);  //Not implemented

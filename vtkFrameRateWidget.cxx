@@ -44,7 +44,7 @@ void vtkFrameRateWidget::Init()
 	this->Renderer->AddObserver(vtkCommand::EndEvent, callback);
 	callback->Delete();
 #else
-	this->Renderer->AddObserver(vtkCommand::EndEvent, this, &vtkFrameRateWidget::RenderCallback);
+	this->Renderer->AddObserver(vtkCommand::EndEvent , this, &vtkFrameRateWidget::RenderCallback);
 #endif
 	
 	this->CreateDefaultRepresentation();
@@ -56,13 +56,16 @@ void vtkFrameRateWidget::Init()
 	this->GetTextActor()->GetTextProperty()->SetColor( 0.0, 1.0, 0.0 );
 	this->GetTextActor()->SetInput("Frame rate: ");
 	this->GetTextActor()->GetTextProperty()->SetJustificationToLeft();
+	tlog = vtkTimerLog::New();
 }
 
 void vtkFrameRateWidget::RenderCallback(vtkObject* caller, long unsigned int vtkNotUsed(eventId),
                                         void* vtkNotUsed(callData) )
 {
+	tlog->StopTimer();
 	double timeInSeconds = this->Renderer->GetLastRenderTimeInSeconds();
-	double fps = 1.0/timeInSeconds;
+	//double fps = 1.0/timeInSeconds;
+	double fps = 1.0/tlog->GetElapsedTime();
 	
 	std::string ss;
 	char a[20];
@@ -72,6 +75,7 @@ void vtkFrameRateWidget::RenderCallback(vtkObject* caller, long unsigned int vtk
 	ss.append(" (fps)\t");
 
 	this->GetTextActor()->SetInput(ss.c_str());
+	tlog->StartTimer();
 
 }
 
